@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: dmoney-postgres
+    environment:
+      POSTGRES_DB: dmoney
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - dmoney_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dmoney"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ../dmoney-tracker-be
+    container_name: dmoney-api
+    ports:
+      - "5113:8080"
+    environment:
+      ConnectionStrings__Database: Host=postgres;Port=5432;Database=dmoney;Username=postgres;Password=postgres
+      Database__AutoMigrate: "true"
+      Cors__Origins: http://localhost:5173;http://localhost:8080
+      Jwt__Secret: dmoney-super-secret-signing-key-change-me-1234567890
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../dmoney-tracker-web
+      args:
+        VITE_API_URL: http://localhost:5113
+    container_name: dmoney-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  dmoney_pgdata:
