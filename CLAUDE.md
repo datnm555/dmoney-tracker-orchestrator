@@ -28,3 +28,6 @@ Orchestrator repo for dmoney-tracker. This repo contains the AI operations brain
 
 - `make clone-all | pull-all | status | branches | list` — manage sibling repos.
 - `docker compose up --build` — full stack (postgres :5432, api :5113, web :8080).
+- `/create-pr [be|web|orchestrator]` — gate-check, push and open a PR for the
+  current feature branch.
+- `.mcp.json` is local-only in every repo (gitignored) — never commit it.
