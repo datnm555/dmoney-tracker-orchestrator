@@ -11,3 +11,5 @@ Aider — Claude Code reads CLAUDE.md, same rules).
   with authoritative per-repo conventions.
 - Workflow changes belong in the skill body so every tool stays in sync — do not
   fork tool-specific copies of skill content.
+- Git flow (branching, agent commit/push authorization): see the "Git flow"
+  section in `CLAUDE.md` — the same rules apply to every agent.
