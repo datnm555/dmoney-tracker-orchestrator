@@ -1,7 +1,7 @@
 # AGENTS.md
 
-Shared agent contract for the dmoney-tracker orchestrator (Copilot, Codex, Cursor,
-Aider — Claude Code reads CLAUDE.md, same rules).
+Shared agent contract for the dmoney-tracker orchestrator (Codex, Cursor, Aider —
+Claude Code reads CLAUDE.md, same rules).
 
 - Skills (single source of truth) live in `.claude/skills/<name>/SKILL.md`.
   When any doc mentions `/skill-name`, read that skill file BEFORE answering or acting.

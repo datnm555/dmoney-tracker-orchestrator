@@ -2,7 +2,9 @@
 
 Central "AI operations brain" for the dmoney-tracker system. Contains **no product
 code** — skills, routing and tooling that let an AI coding agent (Claude Code, etc.)
-understand the whole system. See `HOW-TO-BUILD-AN-ORCHESTRATOR.md` for the model.
+understand the whole system. See
+[`claude-starter-kit/HOW-TO-BUILD-AN-ORCHESTRATOR-claude-en.md`](claude-starter-kit/HOW-TO-BUILD-AN-ORCHESTRATOR-claude-en.md)
+for the model (and `claude-starter-kit/` to scaffold one for another project).
 
 ## Layout
 
@@ -26,7 +28,7 @@ docker compose up --build   # full stack: postgres :5432, api :5113, web :8080
 ## How the AI brain works
 
 - `CLAUDE.md` — thin global rules for Claude Code (every session).
-- `AGENTS.md` — same contract for any other agent (Copilot/Codex/Cursor).
+- `AGENTS.md` — same contract for any other agent (Codex/Cursor).
 - `.claude/skills/` — one skill per service + one platform-wide map:
   `dmoney-platform` (bird's-eye), `dmoney-backend`, `dmoney-web`.
 - `agent_docs/skill-routing.md` — topic→skill and directory→skill tables.

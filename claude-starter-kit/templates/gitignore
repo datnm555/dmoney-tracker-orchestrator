@@ -1,0 +1,16 @@
+# ── Reference clones ────────────────────────────────────────────────
+# Real repos pulled in by `make clone-all`. The orchestrator holds NO
+# product code — these are read-only siblings and must never be committed.
+__ROWS:gitignore-repos__
+# Adding a repo later? Add its directory here too (`make doctor` reminds you).
+
+# ── Local-only agent config (never commit) ──────────────────────────
+.mcp.json
+.claude/settings.local.json
+
+# ── Per-developer / session context (see HOW-TO §7 knowledge layering) ─
+CLAUDE_developer.md
+
+# ── OS & tooling cruft ──────────────────────────────────────────────
+.DS_Store
+.superpowers/
