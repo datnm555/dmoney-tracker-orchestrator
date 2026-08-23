@@ -37,7 +37,8 @@
   `subCategoryName`). No new query params — filtering is client-side.
 - resx vi/en: `menu.beneficiaries` ("Đối tượng"/"People"), `beneficiaries.*` labels
   (title, create, name, rename, delete, deleteConfirm, default, setDefault, none),
-  `form.beneficiary`, `filters.beneficiary`, `filters.noBeneficiary`,
+  `form.beneficiary`, `filters.beneficiary`, `beneficiaries.none` (supersedes the
+  earlier `filters.noBeneficiary` draft key),
   `export.colBeneficiary` + descriptions for the new error codes.
 
 ## Frontend (`dmoney-tracker-web`)
