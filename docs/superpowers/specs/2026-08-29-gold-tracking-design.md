@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-29
 **Status:** Approved
-**Repos:** `dmoney-tracker-be` (branch `feature/gold` off `main`), `dmoney-tracker-web` (branch `feature/gold` off `main`)
+**Repos:** `dmoney-tracker-be` (branch `feature/gold` off `feature/beneficiaries`), `dmoney-tracker-web` (branch `feature/gold` off `feature/beneficiaries`) — feature branches stack; `main` still sits at the initial import in both repos.
 
 ## Decisions (user-approved)
 
