@@ -40,7 +40,8 @@ npm run lint    # oxlint
 - `src/api/client.ts` interceptors: Bearer token + `lang` param on every call;
   401 → clear storage + redirect /login. `STORAGE_KEYS` are load-bearing.
 - Pages: `/app/dashboard` (Tổng quan), `/app/transactions` (Giao dịch),
-  `/app/settings/plans` (Quản lý sổ), `/app/settings/beneficiaries` (Đối tượng);
+  `/app/gold` (Vàng), `/app/settings/plans` (Quản lý sổ),
+  `/app/settings/beneficiaries` (Đối tượng), `/app/settings/gold-types` (Loại vàng);
   `/app/summary` redirects to transactions.
   Auth pages: `/login`, `/register`.
 - Plans (Sổ): every screen is scoped to the plan picked in the header
