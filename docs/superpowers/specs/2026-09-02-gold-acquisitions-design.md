@@ -68,9 +68,11 @@ the same branches).
   `goldAcq.note` ("Ghi chú"/"Note"),
   `goldAcq.deleteConfirm` ("Xóa dòng vàng có sẵn này?"/"Delete this pre-owned
   gold entry?"),
-  errors `GoldAcquisitions.QuantityInvalid` ("Số chỉ phải lớn hơn 0."/"Quantity
-  must be greater than zero."), `GoldAcquisitions.UnitPriceInvalid` ("Đơn giá
-  không được âm."/"Unit price cannot be negative."),
+  errors `GoldAcquisitions.DateRequired` ("Vui lòng chọn ngày."/"Please choose
+  a date." — added during implementation as a defensive domain guard, first of
+  the error keys), `GoldAcquisitions.QuantityInvalid` ("Số chỉ phải lớn hơn
+  0."/"Quantity must be greater than zero."), `GoldAcquisitions.UnitPriceInvalid`
+  ("Đơn giá không được âm."/"Unit price cannot be negative."),
   `GoldAcquisitions.NoteTooLong` ("Ghi chú tối đa 255 ký tự."/"Note must be at
   most 255 characters."), `GoldAcquisitions.NotFound` ("Không tìm thấy dòng
   vàng có sẵn."/"Pre-owned gold entry not found.").
