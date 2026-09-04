@@ -29,7 +29,7 @@
 
 **Interfaces:** `PurchasePlace.Create(Guid userId, string name)`/`Rename`; `PurchasePlaceErrors.{NameRequired,NameTooLong,Duplicate,NotFound,InUse}`; `PurchasePlaceResponse(Guid Id, string Name)`; commands `CreatePurchasePlaceCommand(string Name):ICommand<Guid>`, `UpdatePurchasePlaceCommand(Guid Id, string Name):ICommand`, `DeletePurchasePlaceCommand(Guid Id):ICommand`; routes `GET/POST /purchase-places`, `PUT/DELETE /purchase-places/{id:guid}`.
 
-- [ ] TDD: new test file cloned from `GoldTypes/GoldTypesEndpointsTests.cs` structure — facts: 401 without token; create+list (name order, duplicate 409, blank 400); rename (204 + rename-onto-existing 409); delete unused 204 / foreign user 404. Verify FAIL (404s) → implement the mirror slice (delete has NO InUse guard yet — the referencing columns land in Task 2) → migration → `dotnet build && dotnet test` PASS → commit `feat: purchase place entity and crud endpoints`.
+- [x] TDD: new test file cloned from `GoldTypes/GoldTypesEndpointsTests.cs` structure — facts: 401 without token; create+list (name order, duplicate 409, blank 400); rename (204 + rename-onto-existing 409); delete unused 204 / foreign user 404. Verify FAIL (404s) → implement the mirror slice (delete has NO InUse guard yet — the referencing columns land in Task 2) → migration → `dotnet build && dotnet test` PASS → commit `feat: purchase place entity and crud endpoints`.
 
 ---
 
@@ -48,13 +48,13 @@
 
 with `TransactionErrors.PurchasePlaceRequiresGold = Error.Validation("Transactions.PurchasePlaceRequiresGold", "A purchase place only applies to gold transactions.");`. `GoldAcquisition.Create/Update` + its commands + `UpdateGoldAcquisitionRequest` gain the same trailing param (no guard). Handler ownership checks (all four create/update handlers): `AnyAsync(p => p.Id == id && p.UserId == userId)` → `PurchasePlaceErrors.NotFound`. `TransactionResponse`, `GoldTransactionResponse`, `GoldAcquisitionResponse` append `Guid? PurchasePlaceId = null, string? PurchasePlaceName = null` (+ correlated `dbContext.PurchasePlaces...Name` subqueries in `GetTransactionsByMonthQueryHandler`, both acquisition projections, and the summary tx-history projection). Delete guard: `Transactions.Any || GoldAcquisitions.Any` on `PurchasePlaceId` → `InUse`.
 
-- [ ] TDD facts: tx round-trip with place (create → month summary shows placeId+Name); place without gold pair → 400; unknown place → 404; **update-path threading** for `PUT /transactions/{id}` AND `PUT /gold/acquisitions/{id}` (create without place → PUT with place → read back shows it); acquisition + summary projections carry place; `PurchasePlaces` delete: referenced by tx → 409, by acquisition → 409, after unlink → 204. Verify FAIL → implement → migration → gates PASS → commit `feat: purchase place on gold transactions and acquisitions`.
+- [x] TDD facts: tx round-trip with place (create → month summary shows placeId+Name); place without gold pair → 400; unknown place → 404; **update-path threading** for `PUT /transactions/{id}` AND `PUT /gold/acquisitions/{id}` (create without place → PUT with place → read back shows it); acquisition + summary projections carry place; `PurchasePlaces` delete: referenced by tx → 409, by acquisition → 409, after unlink → 204. Verify FAIL → implement → migration → gates PASS → commit `feat: purchase place on gold transactions and acquisitions`.
 
 ---
 
 ### Task 3: BE — resx keys, push
 
-- [ ] Add the 14 keys from the spec's resx block to BOTH `SharedResource.{vi,en}.resx`, identical order: 6 error codes (5 `PurchasePlaces.*` after the `GoldAcquisitions.*` block; `Transactions.PurchasePlaceRequiresGold` after `Transactions.GoldRequiresAmount`) + 8 UI keys (`menu.purchasePlaces`, `purchasePlaces.{title,create,name,rename,delete,deleteConfirm}`, `form.purchasePlace`) after the `goldAcq.*` block. Gates → commit `feat: purchase place resx keys (vi/en)` → `git push origin feature/gold`.
+- [x] Add the 14 keys from the spec's resx block to BOTH `SharedResource.{vi,en}.resx`, identical order: 6 error codes (5 `PurchasePlaces.*` after the `GoldAcquisitions.*` block; `Transactions.PurchasePlaceRequiresGold` after `Transactions.GoldRequiresAmount`) + 8 UI keys (`menu.purchasePlaces`, `purchasePlaces.{title,create,name,rename,delete,deleteConfirm}`, `form.purchasePlace`) after the `goldAcq.*` block. Gates → commit `feat: purchase place resx keys (vi/en)` → `git push origin feature/gold`.
 
 ---
 
@@ -62,7 +62,7 @@ with `TransactionErrors.PurchasePlaceRequiresGold = Error.Validation("Transactio
 
 **Files:** Create `src/api/purchasePlaceApi.ts`, `src/purchasePlaces/{PurchasePlacesContext.tsx,CreatePurchasePlaceDialog.tsx}`, `src/pages/PurchasePlaceSettingsPage.tsx` (+ tests for context and page); Modify `src/api/types.ts` (`PurchasePlaceResponse { id, name }`), `src/App.tsx` (route `settings/purchase-places`), `src/layouts/AppLayout.tsx` (`Store` icon import, SETTINGS_ITEMS entry `menu.purchasePlaces`, `PurchasePlacesProvider` inside `GoldTypesProvider`).
 
-- [ ] Branch check (`feature/gold`, pull). TDD: context test (load+refresh, clone of GoldTypesContext.test) and settings-page test (list/rename/delete, clone of GoldTypeSettingsPage.test with `purchasePlaces.*` keys + `updatePurchasePlace`/`deletePurchasePlace`). Implement as byte-mirror clones of the gold-types set (`usePurchasePlaces(): { purchasePlaces, refresh }`). Gates → commit `feat: purchase place settings page`.
+- [x] Branch check (`feature/gold`, pull). TDD: context test (load+refresh, clone of GoldTypesContext.test) and settings-page test (list/rename/delete, clone of GoldTypeSettingsPage.test with `purchasePlaces.*` keys + `updatePurchasePlace`/`deletePurchasePlace`). Implement as byte-mirror clones of the gold-types set (`usePurchasePlaces(): { purchasePlaces, refresh }`). Gates → commit `feat: purchase place settings page`.
 
 ---
 
@@ -70,10 +70,10 @@ with `TransactionErrors.PurchasePlaceRequiresGold = Error.Validation("Transactio
 
 **Files:** Modify `src/gold/GoldAcquisitionDialog.tsx`, `src/components/TransactionFormModal.tsx`, `src/pages/TransactionsPage.tsx` (payload passthrough), `src/api/goldApi.ts` (`GoldAcquisitionPayload.purchasePlaceId: string | null`), `src/api/transactionApi.ts` (`TransactionPayload.purchasePlaceId: string | null`), `src/api/types.ts` (3 response interfaces gain `purchasePlaceId`/`purchasePlaceName`), `src/pages/GoldPage.tsx` (history: both row kinds render `{typeName}` + `{purchasePlaceName && <span className="text-xs text-muted-foreground"> · {row.purchasePlaceName}</span>}`), ALL TransactionResponse fixtures (+2 null fields — grep `goldTypeName: null`), GoldPage/GoldAcquisitionDialog/TransactionFormModal tests.
 
-- [ ] TDD: dialog submits `purchasePlaceId` when picked and null otherwise + edit prefills; form modal gold block gains the Select (mock `../purchasePlaces/PurchasePlacesContext`), submitted only while the gold toggle is on (turning it off clears place too), `TransactionFormValues.purchasePlaceId`; TransactionsPage payload passes it through; GoldPage history shows ` · SJC` on a fixture row. Implement (Select pattern = existing gold-type Select; place Select sits next to it inside the gold block; acquisition dialog adds it after the type Select). Gates → commit `feat: purchase place selects and history display` → `git push origin feature/gold`.
+- [x] TDD: dialog submits `purchasePlaceId` when picked and null otherwise + edit prefills; form modal gold block gains the Select (mock `../purchasePlaces/PurchasePlacesContext`), submitted only while the gold toggle is on (turning it off clears place too), `TransactionFormValues.purchasePlaceId`; TransactionsPage payload passes it through; GoldPage history shows ` · SJC` on a fixture row. Implement (Select pattern = existing gold-type Select; place Select sits next to it inside the gold block; acquisition dialog adds it after the type Select). Gates → commit `feat: purchase place selects and history display` → `git push origin feature/gold`.
 
 ---
 
 ### Task 6: E2E, cleanup, deploy, docs
 
-- [ ] `docker compose up --build -d` (this is the redeploy; leave running). E2E throwaway user: create place ×2 + type; acquisition with place; tx buy with place; tx with place but NO gold → 400; unknown place → 404; summary + acquisitions show placeName on rows; PUT threading spot-check both endpoints; place delete 409 (referenced) → unlink → 204. CLEANUP per memory (verify 0 test users/categories left). Update platform-skill gold contract row (purchase places endpoints + fields); commit + push orchestrator main (Claude trailers). PR comments on be#11/web#8 via `mcp__github__add_issue_comment`. Report actual numbers.
+- [x] `docker compose up --build -d` (this is the redeploy; leave running). E2E throwaway user: create place ×2 + type; acquisition with place; tx buy with place; tx with place but NO gold → 400; unknown place → 404; summary + acquisitions show placeName on rows; PUT threading spot-check both endpoints; place delete 409 (referenced) → unlink → 204. CLEANUP per memory (verify 0 test users/categories left). Update platform-skill gold contract row (purchase places endpoints + fields); commit + push orchestrator main (Claude trailers). PR comments on be#11/web#8 via `mcp__github__add_issue_comment`. Report actual numbers.
