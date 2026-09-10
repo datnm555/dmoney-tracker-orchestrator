@@ -15,7 +15,7 @@ block and error codes there are verbatim requirements.
 
 ### Task 1: BE — Bank slice (entity, table, CRUD, seeding migration)
 
-- [ ] Clone the PurchasePlaces slice → Banks (Domain trio minus InUse,
+- [x] Clone the PurchasePlaces slice → Banks (Domain trio minus InUse,
   EF config, commands/handlers/query, endpoints, DI, DbSet). Migration
   `AddBanks` + `Sql()` seeding distinct non-empty `transactions.Bank` per
   user. TDD off `PurchasePlacesEndpointsTests` (delete: plain 204, no 409
@@ -23,19 +23,19 @@ block and error codes there are verbatim requirements.
 
 ### Task 2: BE — resx keys, push
 
-- [ ] 11 keys from the spec (4 error + 7 UI), identical order both files.
+- [x] 11 keys from the spec (4 error + 7 UI), identical order both files.
   Gates → commit `feat: bank catalog resx keys (vi/en)` → push.
 
 ### Task 3: FE — api, context, settings page
 
-- [ ] Clone the purchase-places set (bankApi, BanksContext + test,
+- [x] Clone the purchase-places set (bankApi, BanksContext + test,
   CreateBankDialog, BankSettingsPage + test, route
   `settings/banks`, sidebar `menu.banks` with `Landmark`, provider inside
   PurchasePlacesProvider). Gates → commit `feat: bank settings page`.
 
 ### Task 4: FE — form chips from catalog, push
 
-- [ ] `TransactionFormModal`: chips from `useBanks()` (mock the context in
+- [x] `TransactionFormModal`: chips from `useBanks()` (mock the context in
   tests), first-letter avatar colored from a name-hash palette, custom-input
   toggle unchanged, edit-prefill custom detection against catalog names;
   delete `BANK_PRESETS`. Gates → commit
@@ -43,7 +43,7 @@ block and error codes there are verbatim requirements.
 
 ### Task 5: E2E, cleanup, deploy, docs
 
-- [ ] Stack rebuild; throwaway-user E2E (bank CRUD + duplicate 409 + foreign
+- [x] Stack rebuild; throwaway-user E2E (bank CRUD + duplicate 409 + foreign
   404 + tx with picked bank name round-trip + seeding check via SQL);
   cleanup (0 test users); platform-skill contract row; orchestrator commit +
   push; PR comments be#11/web#8 via MCP.
