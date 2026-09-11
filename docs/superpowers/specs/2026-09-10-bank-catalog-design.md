@@ -68,6 +68,16 @@ custom input. Gates: `npm test && npm run build && npm run lint`.
 Final: docker E2E + cleanup + stack rebuild + platform-skill contract row +
 PR comments (MCP).
 
+## Addendum 2026-09-11: default bank (owner request)
+
+Mirrors the beneficiary default: `Bank.IsDefault` (single per user, no
+auto-default on create), `PUT /banks/{id}/default` switches it, `GET /banks`
+orders default first then name, `BankResponse` gains `IsDefault`. Migration
+`AddBankIsDefault` (no backfill). resx: `banks.default` ("Mặc
+định"/"Default"), `banks.setDefault` ("Đặt mặc định"/"Set default"). FE:
+settings badge + star button; the transaction form preselects the default
+bank's chip on a new transaction (editing keeps the stored value).
+
 ## Out of scope
 
 Logos per bank, account numbers/balances, bank on cash payments.
