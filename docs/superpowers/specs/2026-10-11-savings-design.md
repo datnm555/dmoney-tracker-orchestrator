@@ -103,3 +103,52 @@ Savings page renders total, accounts, unassigned label, filter by card.
 Gates: `npm test && npm run build && npm run lint`.
 Final: docker rebuild + smoke check of `/savings/summary` + UI, E2E test data
 cleanup, platform-skill contract row, PR comments via MCP (not gh).
+
+## Addendum 2026-10-11 — scope to "Sổ tiết kiệm" + default plan + stats (owner-approved)
+
+The owner corrected the scope: Tích luỹ also holds gold (sub-category "Vàng",
+already covered by the Gold page), so savings must mean **only the
+sub-category "Sổ tiết kiệm"**, and **only the user's default plan** (sổ mặc
+định), not all plans. Supersedes decisions 2, 4 and 6 above.
+
+**Backend**
+- `SubCategory` gains `Code` (`string?`, max 30, column `"Code"`), like
+  `Category.Code`. Constant `SubCategoryCodes.SavingsBook = "savings_book"`.
+  Migration `AddSubCategoryCode`: add column, then `Sql()` — set
+  `"Code" = 'savings_book'` on the sub-category named `Sổ tiết kiệm` whose
+  category has `"Code" = 'savings'`; if none exists but the `savings`
+  category does, INSERT it (`Name 'Sổ tiết kiệm'`, `IsDefault false`,
+  `CreatedBy 'system'`, `Code 'savings_book'`). Down drops the column.
+- A coded sub-category can be renamed but not deleted (400
+  `SubCategories.SystemSubCategory`, "Không thể xóa danh mục con hệ
+  thống."/"System sub-categories cannot be deleted.") — mirror whatever
+  guard coded categories already have; if categories have none, add this one.
+- `SubCategoryResponse` appends `string? Code = null`.
+- `GET /savings/summary` filters `t.UserId == userId && t.PlanId ==
+  <user's IsDefault plan> && t.SubCategoryId ∈ sub-categories with Code ==
+  "savings_book"`. Response gains leading info `Guid PlanId, string PlanName`
+  (new record shape: `SavingsSummaryResponse(Guid PlanId, string PlanName,
+  MoneyResponse TotalBalance, Accounts, Transactions)`). Account/transaction
+  records unchanged.
+- resx vi/en: `savings.plan` ("Sổ"/"Ledger"), `savings.thisMonth` ("Gửi
+  tháng này"/"Deposited this month"), `savings.totalDeposited` ("Tổng đã
+  gửi"/"Total deposited"), `savings.totalWithdrawn` ("Tổng đã rút"/"Total
+  withdrawn"), `savings.monthlyChart` ("Gửi / rút theo tháng"/"Deposits and
+  withdrawals by month"), `SubCategories.SystemSubCategory` (above); update
+  `savings.hint` → "Danh mục Tích luỹ › Sổ tiết kiệm của sổ mặc định: ghi nợ
+  = gửi vào, ghi có = rút ra."/"Savings › Savings book in the default
+  ledger: debit = deposit, credit = withdrawal." and `savings.empty` →
+  "Chưa có giao dịch sổ tiết kiệm nào trong sổ mặc định."/"No savings-book
+  transactions in the default ledger yet."
+
+**Frontend**
+- `SubCategoryResponse.code: string | null`. Form shows "Nơi gửi" only when
+  the selected sub-category's `code === 'savings_book'` (null otherwise).
+- Savings page: header line `savings.plan: {planName}`; stat tiles (total
+  balance, `savings.totalDeposited`, `savings.totalWithdrawn`,
+  `savings.thisMonth` (deposits dated in the current local month), count) —
+  computed client-side from `transactions`; a Recharts bar chart
+  `savings.monthlyChart` with two series (deposit = income color, withdrawal
+  = expense color) over the last 12 months ending at the current month, data
+  from a pure transform `savingsMonthly(transactions, today)` in
+  `src/utils/chartData.ts` (tested); then the account cards + history as now.
