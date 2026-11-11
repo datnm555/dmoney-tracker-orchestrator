@@ -24,6 +24,27 @@ Orchestrator repo for dmoney-tracker. This repo contains the AI operations brain
   no per-push permission needed (owner: datnm555, 2026-07-07).
 - Never force-push. Never push failing builds or half-done work.
 
+### Ship flow (be/web) — run automatically after every finished feature
+
+Authorized by the owner (datnm555, 2026-11-11): no per-step confirmation needed.
+
+1. Implement on `feature/<name>` (branched from latest `main`).
+2. Gates green: be → `dotnet build DMoney.slnx` (zero warnings) + `dotnet test DMoney.slnx`;
+   web → `npm test && npm run build` + `npm run lint` adds no new warnings.
+3. Push the feature branch to `origin`.
+4. Open a PR against `main` (MCP `github` tools — the local `gh` CLI is logged
+   into the wrong account), then **merge it into `main` right away** (merge commit).
+   Cross-repo contract changes: merge the be PR before the web PR.
+5. Pull `main` locally in the affected repos and deploy with docker:
+   `docker compose build <api|web>` (run in background — the CLI can hang after
+   "Built"), then `docker compose up -d <api|web>`.
+6. Verify: api answers on :5113 (new migrations applied), web returns 200 on
+   :8080 and serves the new bundle.
+7. Report the PR link(s) and the deploy result to the owner.
+
+If any step fails (red gate, merge conflict, merge blocked, failed build), stop
+there and report — never merge or deploy a red build.
+
 ## Quick reference
 
 - `make clone-all | pull-all | status | branches | list` — manage sibling repos.
