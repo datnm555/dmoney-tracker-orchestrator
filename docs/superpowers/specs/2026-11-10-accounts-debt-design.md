@@ -96,15 +96,16 @@ No summary endpoint: totals are derived on the client from `GET /accounts`.
     `availableCredit(accounts)` (Σ max(0, limit − owed) over debt types with a limit),
     `monthlyInterest(account)` (overdraft only: owed × rate / 100 / 12, rounded),
     `upcomingDues(accounts, today)` → credit cards whose latest snapshot has
-    `dueDate ≥ today`, `statementAmount > 0`, `!statementPaid`, sorted by
-    due date, with `daysLeft`; `urgent = daysLeft ≤ 3`.
+    a `dueDate`, `statementAmount > 0`, `!statementPaid`, sorted by
+    due date, with `daysLeft` (negative = overdue); `urgent = daysLeft ≤ 3`
+    (so overdue unpaid statements stay listed and urgent, labelled `accounts.overdue`).
 - Route `/app/accounts` ("Tài khoản & Nợ") + sidebar entry next to Tiết kiệm.
 - `AccountsPage`:
   - 3 stat tiles: **Tiền đang có** (green), **Tổng nợ** (red), **Hạn mức còn dùng được**; plus "Lãi thấu chi ước tính / tháng" under the debt tile when > 0.
   - **Sắp đến hạn** list (card name •••last4, amount, due date, days left; red when urgent) with a **Đã trả** button → PUT latest snapshot with `statementPaid: true`.
   - Account cards grouped: Tiền / Thấu chi / Thẻ tín dụng. Each shows name •••last4, current balance (owed for debt types), for debt types a usage bar (owed / limit) and available amount, last updated date, and actions: **Cập nhật số dư**, history, edit, delete.
   - **Account dialog**: name, type, last 4 digits, and for debt types limit, statement day, due day, interest rate.
-  - **Snapshot dialog**: date (default today), balance (label "Số dư" or "Dư nợ" by type). Debt types with a limit get an optional **"Khả dụng"** helper that fills Dư nợ = limit − khả dụng. Credit cards also show statement amount, due date, installment remaining, paid checkbox. Note.
+  - **Snapshot dialog**: date (default today); a new reading on a credit card carries over statement amount / due date / installment / paid from the latest snapshot, balance (label "Số dư" or "Dư nợ" by type). Debt types with a limit get an optional **"Khả dụng"** helper that fills Dư nợ = limit − khả dụng. Credit cards also show statement amount, due date, installment remaining, paid checkbox. Note.
   - **History** dialog: snapshots newest first with edit/delete.
 - Dashboard: a warning banner when `upcomingDues` has an urgent item ("Thẻ X đến hạn sau N ngày: Y ₫", composed per the i18n note), linking to `/app/accounts`.
 
@@ -112,7 +113,7 @@ No summary endpoint: totals are derived on the client from `GET /accounts`.
 
 The i18n layer has no placeholders: the web composes phrases, e.g. "còn 3 ngày" = `t('accounts.left') 3 t('accounts.days')`, banner = `<card> t('accounts.dueIn') 3 t('accounts.days'): <amount>`, "Cập nhật 10/11/2026" = `t('accounts.lastUpdated') <date>`.
 
-`nav.accounts` Tài khoản & Nợ / Accounts & Debt ·
+`menu.accounts` Tài khoản & Nợ / Accounts & Debt ·
 `accounts.title` Tài khoản & Nợ / Accounts & Debt ·
 `accounts.hint` Số dư nhập tay theo app ngân hàng — không tính từ giao dịch. / Balances are entered from your bank app — not computed from transactions. ·
 `accounts.cashTotal` Tiền đang có / Cash on hand ·
@@ -156,7 +157,8 @@ The i18n layer has no placeholders: the web composes phrases, e.g. "còn 3 ngày
 `accounts.lastUpdated` Cập nhật / Updated ·
 `accounts.empty` Chưa có tài khoản nào / No accounts yet ·
 `accounts.noSnapshot` Chưa cập nhật số dư / No balance yet ·
-`accounts.dueIn` đến hạn sau / due in
+`accounts.dueIn` đến hạn sau / due in ·
+`accounts.overdue` quá hạn / overdue
 — plus one message per `Accounts.*` error code.
 
 ## Testing
