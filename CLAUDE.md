@@ -3,6 +3,10 @@
 Orchestrator repo for dmoney-tracker. This repo contains the AI operations brain
 (skills, routing, docker compose) — **zero product code**.
 
+> Superseded as the AI brain by `../my-git-orchestrator` (2026-11-17): work on dmoney from there.
+> This repo stays for `docker-compose.yml`; its cross-repo contract table now lives in
+> my-git-orchestrator at `.claude/skills/dmoney-tracker-be/references/contracts.md`.
+
 ## Golden rules
 
 1. **Code lives in the real repos.** All code changes, commits and PRs happen in
@@ -12,7 +16,8 @@ Orchestrator repo for dmoney-tracker. This repo contains the AI operations brain
    Routing table: `agent_docs/skill-routing.md`. When unsure which skill applies,
    load `dmoney-platform` first — it is the system map.
 3. Cross-repo contracts (DTO shapes, category/payment codes, resx keys) must be
-   changed on BOTH sides in the same piece of work — the platform skill lists them.
+   changed on BOTH sides in the same piece of work — listed in my-git-orchestrator's
+   `dmoney-tracker-be/references/contracts.md`.
 
 ## Git flow
 
